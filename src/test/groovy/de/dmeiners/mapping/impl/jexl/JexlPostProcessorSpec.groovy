@@ -79,7 +79,7 @@ class JexlPostProcessorSpec extends Specification {
     def "throws an exception if a script execution fails"() {
 
         given:
-        def scriptText = "target.subtract(1)"
+        def scriptText = "target.bogus(1)"
         def target = "Hello World!"
         def subject = new JexlPostProcessor()
 
@@ -88,6 +88,6 @@ class JexlPostProcessorSpec extends Specification {
 
         then:
         def e = thrown(ScriptExecutionException)
-        e.message == "Error executing parsed script: 'target.subtract(1);\ntarget;\n'"
+        e.message == "Error executing parsed script: 'target.bogus(1);\ntarget;\n'"
     }
 }
