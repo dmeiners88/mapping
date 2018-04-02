@@ -65,12 +65,12 @@ public class JexlPostProcessor implements PostProcessor {
         JexlScript script = scriptText.parse(this.engine);
 
         return targets.stream()
-            .map(target -> execute(target, context, script))
-            .map(result -> cast(targets.iterator().next(), result))
+            .map(target -> executeScript(target, context, script))
+            .map(result -> castResult(targets.iterator().next(), result))
             .collect(Collectors.toList());
     }
 
-    private <T> Object execute(T target, Map<String, Object> context, JexlScript script) {
+    private <T> Object executeScript(T target, Map<String, Object> context, JexlScript script) {
 
         Object result;
 
@@ -83,7 +83,7 @@ public class JexlPostProcessor implements PostProcessor {
         return result;
     }
 
-    private <T> T cast(T target, Object result) {
+    private <T> T castResult(T target, Object result) {
 
         if (!target.getClass().isInstance(result)) {
             throw new ResultTypeException(String.format("Script did not return an object of type '%s'.",
