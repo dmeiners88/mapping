@@ -1,0 +1,32 @@
+package de.dmeiners.mapping.impl.jexl;
+
+import java.util.Collections;
+import java.util.Set;
+
+public class SandboxClassLoader extends ClassLoader {
+
+    private final Set<String> whitelist;
+    private final Set<String> blacklist;
+
+    public SandboxClassLoader() {
+
+        this.whitelist = Collections.emptySet();
+        this.blacklist = Collections.singleton("java.lang.System");
+    }
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+
+        return loadClass(name, false);
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+
+        if ((this.whitelist.isEmpty() || this.whitelist.contains(name)) && !this.blacklist.contains(name)) {
+            return super.loadClass(name, resolve);
+        }
+
+        throw new ClassNotFoundException();
+    }
+}

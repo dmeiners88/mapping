@@ -12,6 +12,8 @@ import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlScript;
 import org.apache.commons.jexl3.MapContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JexlPostProcessor implements PostProcessor {
+
+    private static final Logger logger = LoggerFactory.getLogger(JexlPostProcessor.class);
 
     private final JexlEngine engine;
     private final ScriptNameResolver scriptNameResolver;
@@ -30,13 +34,19 @@ public class JexlPostProcessor implements PostProcessor {
     }
 
     JexlPostProcessor(ScriptNameResolver scriptNameResolver) {
+
+
         this.engine = new JexlBuilder()
             .cache(512)
             .strict(true)
             .silent(false)
+            .sandbox(JexlSandboxFactory.create())
+            .loader(new SandboxClassLoader())
             .create();
 
         this.scriptNameResolver = scriptNameResolver;
+
+        logger.debug("Initialized.");
     }
 
     @Override

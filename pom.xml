@@ -37,9 +37,21 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.17.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-jexl3</artifactId>
                 <version>3.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -53,6 +65,23 @@
                 <version>3.9.1</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.25</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>1.7.25</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -63,6 +92,10 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -83,6 +116,18 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-jexl3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -170,7 +215,11 @@
                         <relocations>
                             <relocation>
                                 <pattern>org.apache.commons.jexl3</pattern>
-                                <shadedPattern>org.shaded.commons.jexl3</shadedPattern>
+                                <shadedPattern>shaded.org.apache.commons.jexl3</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>org.apache.commons.logging</pattern>
+                                <shadedPattern>shaded.org.apache.commons.logging</shadedPattern>
                             </relocation>
                         </relocations>
                     </configuration>
@@ -223,7 +272,7 @@
                         </goals>
                         <configuration>
                             <failOnWarning>true</failOnWarning>
-                            <ignoredDependencies>org.junit.jupiter:junit-jupiter-engine</ignoredDependencies>
+                            <usedDependencies>org.slf4j:slf4j-simple</usedDependencies>
                         </configuration>
                     </execution>
                 </executions>
