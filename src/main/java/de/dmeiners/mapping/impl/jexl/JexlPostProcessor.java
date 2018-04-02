@@ -91,7 +91,7 @@ public class JexlPostProcessor implements PostProcessor {
         }
 
         // The above check should let this "cast" never fail. At runtime we are dealing with objects anyway.
-        return (T) target.getClass().cast(result);
+        return (T) result;
     }
 
 }
