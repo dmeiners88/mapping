@@ -2,6 +2,8 @@ package de.dmeiners.mapping.api;
 
 import com.google.errorprone.annotations.Immutable;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 @Immutable
@@ -19,6 +21,16 @@ public class ScriptName {
 
     public String getName() {
         return name;
+    }
+
+    public ScriptText resolve(ScriptNameResolver resolver, Map<String, Object> context) {
+
+        return resolver.resolve(this, context);
+    }
+
+    public ScriptText resolve(ScriptNameResolver resolver) {
+
+        return resolve(resolver, Collections.emptyMap());
     }
 
     @Override

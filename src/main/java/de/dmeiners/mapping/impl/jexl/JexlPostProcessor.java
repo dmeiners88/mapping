@@ -5,7 +5,6 @@ import de.dmeiners.mapping.api.ResultTypeException;
 import de.dmeiners.mapping.api.ScriptExecutionException;
 import de.dmeiners.mapping.api.ScriptName;
 import de.dmeiners.mapping.api.ScriptNameResolver;
-import de.dmeiners.mapping.api.ScriptParseException;
 import de.dmeiners.mapping.api.ScriptText;
 import de.dmeiners.mapping.impl.ClasspathScriptNameResolver;
 import org.apache.commons.jexl3.JexlBuilder;
@@ -42,14 +41,14 @@ public class JexlPostProcessor implements PostProcessor {
     @Override
     public <T> T process(T target, ScriptName scriptName, Map<String, Object> context) {
 
-        ScriptText scriptText = this.scriptNameResolver.resolve(scriptName);
+        ScriptText scriptText = scriptName.resolve(this.scriptNameResolver, context);
         return process(target, scriptText, context);
     }
 
     @Override
     public <T> T process(T target, ScriptText scriptText, Map<String, Object> context) {
 
-        JexlScript script = parse(scriptText);
+        JexlScript script = scriptText.parse(this.engine);
         Object result = execute(target, context, script);
 
         if (!target.getClass().isInstance(result)) {
@@ -64,7 +63,7 @@ public class JexlPostProcessor implements PostProcessor {
     @Override
     public <T> List<T> process(Collection<T> targets, ScriptName scriptName, Map<String, Object> context) {
 
-        ScriptText scriptText = this.scriptNameResolver.resolve(scriptName);
+        ScriptText scriptText = scriptName.resolve(this.scriptNameResolver, context);
         return process(targets, scriptText, context);
     }
 
@@ -89,21 +88,4 @@ public class JexlPostProcessor implements PostProcessor {
         return result;
     }
 
-    private JexlScript parse(ScriptText scriptText) {
-
-        ScriptText preparedScriptText = ensureLastExpressionIsTarget(scriptText);
-        JexlScript script;
-
-        try {
-
-            script = engine.createScript(preparedScriptText.getText(), "target");
-        } catch (JexlException e) {
-            throw new ScriptParseException(String.format("Error parsing script text: '%s'", preparedScriptText), e);
-        }
-        return script;
-    }
-
-    private ScriptText ensureLastExpressionIsTarget(ScriptText scriptText) {
-        return ScriptText.of(String.format("%s; target;", scriptText.toString()));
-    }
 }

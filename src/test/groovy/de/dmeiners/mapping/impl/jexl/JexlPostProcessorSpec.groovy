@@ -34,7 +34,7 @@ class JexlPostProcessorSpec extends Specification {
         def target = "Unchanged"
         ScriptNameResolver scriptNameResolver = Mock()
         def subject = new JexlPostProcessor(scriptNameResolver)
-        scriptNameResolver.resolve(scriptName) >> ScriptText.of("")
+        scriptNameResolver.resolve(scriptName, [:]) >> ScriptText.of("")
 
         when:
         def result = subject.process(target, scriptName, [:])
@@ -50,7 +50,7 @@ class JexlPostProcessorSpec extends Specification {
         def target = "Unchanged"
         ScriptNameResolver scriptNameResolver = Mock()
         def subject = new JexlPostProcessor(scriptNameResolver)
-        scriptNameResolver.resolve(scriptName) >> ScriptText.of("")
+        scriptNameResolver.resolve(scriptName, [:]) >> ScriptText.of("")
 
         when:
         def result = subject.process([target, target], scriptName, [:])
