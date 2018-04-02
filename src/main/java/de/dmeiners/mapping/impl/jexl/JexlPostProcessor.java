@@ -50,7 +50,7 @@ public class JexlPostProcessor implements PostProcessor {
         JexlScript script = parse(scriptText);
         Object result = execute(target, context, script);
 
-        if (!result.getClass().isInstance(target)) {
+        if (!target.getClass().isInstance(result)) {
             throw new ResultTypeException(String.format("Script did not return an object of type '%s'.",
                 target.getClass().getName()));
         }
