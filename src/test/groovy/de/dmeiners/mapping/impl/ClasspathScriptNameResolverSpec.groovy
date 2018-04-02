@@ -17,7 +17,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
 
         then:
         def e = thrown(ScriptNameResolutionException)
-        e.message == "Could not find any of the following classpath resources: [/jexl/nonExisting.jexl]"
+        e.message == "Could not find any of the following classpath resources: [/jexl/nonExisting.jexl]."
     }
 
     def "fails on non-existing script name when a tenant prefix is available"() {
@@ -31,7 +31,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
 
         then:
         def e = thrown(ScriptNameResolutionException)
-        e.message == "Could not find any of the following classpath resources: [/jexl/5dc6dfaa-b2e2-492a-8c04-380e9c4c3371/nonExisting.jexl, /jexl/nonExisting.jexl]"
+        e.message == "Could not find any of the following classpath resources: [/jexl/5dc6dfaa-b2e2-492a-8c04-380e9c4c3371/nonExisting.jexl, /jexl/nonExisting.jexl]."
     }
 
     def "resolves an existing script name"() {

@@ -4,6 +4,8 @@ import de.dmeiners.mapping.api.ScriptName;
 import de.dmeiners.mapping.api.ScriptNameResolutionException;
 import de.dmeiners.mapping.api.ScriptNameResolver;
 import de.dmeiners.mapping.api.ScriptText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ClasspathScriptNameResolver implements ScriptNameResolver {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClasspathScriptNameResolver.class);
 
     private final String prefix;
     private final String tenantKeyInScriptContext;
@@ -53,6 +57,8 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
     public ClasspathScriptNameResolver(String prefix, String tenantKeyInScriptContext) {
         this.prefix = prefix;
         this.tenantKeyInScriptContext = tenantKeyInScriptContext;
+
+        logger.debug("Initialized with prefix '{}' and tenant key in script context '{}'.", this.prefix, this.tenantKeyInScriptContext);
     }
 
     /**
@@ -80,12 +86,15 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
+        logger.debug("Trying to resolve the following script names, in order: {}.", searchPath);
+
         return searchPath.stream()
             .map(ClasspathScriptNameResolver.class::getResource)
             .filter(Objects::nonNull)
+            .peek(resource -> logger.debug("Successfully resolved '{}'.", resource.getPath()))
             .findFirst()
             .orElseThrow(() -> new ScriptNameResolutionException(
-                String.format("Could not find any of the following classpath resources: %s", searchPath)));
+                String.format("Could not find any of the following classpath resources: %s.", searchPath)));
     }
 
     private String ensureSuffix(String scriptName) {
