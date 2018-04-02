@@ -88,4 +88,26 @@ class JexlPostProcessorSpec extends Specification {
         def e = thrown(ScriptExecutionException)
         e.message == "Error executing parsed script: 'target.bogus(1);\ntarget;\n'"
     }
+
+    def "processes a simple inline script on a single target"() {
+
+        given:
+        def scriptText = ScriptText.of("target += ' World!'")
+        def target = "Hello"
+        def subject = new JexlPostProcessor()
+
+        expect:
+        subject.process(target, scriptText, [:]) == "Hello World!"
+    }
+
+    def "processes a simple inline script on multiple targets"() {
+
+        given:
+        def scriptText = ScriptText.of("target += ' World!'")
+        def targets = ["Hello", "Goodbye"]
+        def subject = new JexlPostProcessor()
+
+        expect:
+        subject.process(targets, scriptText, [:]) == ["Hello World!", "Goodbye World!"]
+    }
 }

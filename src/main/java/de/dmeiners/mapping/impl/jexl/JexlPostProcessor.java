@@ -14,6 +14,7 @@ import org.apache.commons.jexl3.JexlScript;
 import org.apache.commons.jexl3.MapContext;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,16 +49,7 @@ public class JexlPostProcessor implements PostProcessor {
     @Override
     public <T> T process(T target, ScriptText scriptText, Map<String, Object> context) {
 
-        JexlScript script = scriptText.parse(this.engine);
-        Object result = execute(target, context, script);
-
-        if (!target.getClass().isInstance(result)) {
-            throw new ResultTypeException(String.format("Script did not return an object of type '%s'.",
-                target.getClass().getName()));
-        }
-
-        // The above check should let this "cast" never fail. At runtime we are dealing with objects anyway.
-        return (T) result;
+        return process(Collections.singletonList(target), scriptText, context).iterator().next();
     }
 
     @Override
@@ -70,8 +62,11 @@ public class JexlPostProcessor implements PostProcessor {
     @Override
     public <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context) {
 
+        JexlScript script = scriptText.parse(this.engine);
+
         return targets.stream()
-            .map(it -> process(it, scriptText, context))
+            .map(it -> execute(it, context, script))
+            .map(it -> cast(targets.iterator().next(), it))
             .collect(Collectors.toList());
     }
 
@@ -86,6 +81,17 @@ public class JexlPostProcessor implements PostProcessor {
                 script.getParsedText()), e);
         }
         return result;
+    }
+
+    private <T> T cast(T target, Object result) {
+
+        if (!target.getClass().isInstance(result)) {
+            throw new ResultTypeException(String.format("Script did not return an object of type '%s'.",
+                target.getClass().getName()));
+        }
+
+        // The above check should let this "cast" never fail. At runtime we are dealing with objects anyway.
+        return (T) target.getClass().cast(result);
     }
 
 }
