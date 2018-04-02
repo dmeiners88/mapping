@@ -1,6 +1,8 @@
 package de.dmeiners.mapping.impl.jexl;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class SandboxClassLoader extends ClassLoader {
@@ -11,7 +13,7 @@ public class SandboxClassLoader extends ClassLoader {
     public SandboxClassLoader() {
 
         this.whitelist = Collections.emptySet();
-        this.blacklist = Collections.singleton("java.lang.System");
+        this.blacklist = new HashSet<>(Arrays.asList("java.lang.System", "java.lang.Runtime"));
     }
 
     @Override
