@@ -25,10 +25,18 @@ public class SandboxClassLoader extends ClassLoader {
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 
-        if ((this.whitelist.isEmpty() || this.whitelist.contains(name)) && !this.blacklist.contains(name)) {
+        if (isWhitelisted(name) && isNotBlacklisted(name)) {
             return super.loadClass(name, resolve);
         }
 
         throw new ClassNotFoundException();
+    }
+
+    private boolean isNotBlacklisted(String name) {
+        return !this.blacklist.contains(name);
+    }
+
+    private boolean isWhitelisted(String name) {
+        return this.whitelist.isEmpty() || this.whitelist.contains(name);
     }
 }
