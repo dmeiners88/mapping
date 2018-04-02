@@ -1,6 +1,8 @@
 package de.dmeiners.mapping.impl
 
+import de.dmeiners.mapping.api.ScriptName
 import de.dmeiners.mapping.api.ScriptNameResolutionException
+import de.dmeiners.mapping.api.ScriptText
 import spock.lang.Specification
 
 class ClasspathScriptNameResolverSpec extends Specification {
@@ -11,7 +13,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         when:
-        subject.resolve("nonExisting.jexl")
+        subject.resolve(ScriptName.of("nonExisting.jexl"))
 
         then:
         def e = thrown(ScriptNameResolutionException)
@@ -25,7 +27,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         when:
-        subject.resolve("nonExisting.jexl", [tenantId: tenantId])
+        subject.resolve(ScriptName.of("nonExisting.jexl"), [tenantId: tenantId])
 
         then:
         def e = thrown(ScriptNameResolutionException)
@@ -38,7 +40,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve("myScript.jexl", [:]) == "// I am here"
+        subject.resolve(ScriptName.of("myScript.jexl"), [:]) == ScriptText.of("// I am here")
     }
 
     def "resolves an existing script name when a tenant prefix is available"() {
@@ -48,7 +50,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve("myScript.jexl", [tenantId: tenantId]) == "// Tenant override"
+        subject.resolve(ScriptName.of("myScript.jexl"), [tenantId: tenantId]) == ScriptText.of("// Tenant override")
     }
 
     def "falls back to default script name when a tenant prefix is invalid"() {
@@ -58,6 +60,6 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve("myScript.jexl", [tenantId: tenantId]) == "// I am here"
+        subject.resolve(ScriptName.of("myScript.jexl"), [tenantId: tenantId]) == ScriptText.of("// I am here")
     }
 }

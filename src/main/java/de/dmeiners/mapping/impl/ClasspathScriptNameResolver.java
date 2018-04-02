@@ -1,7 +1,9 @@
 package de.dmeiners.mapping.impl;
 
+import de.dmeiners.mapping.api.ScriptName;
 import de.dmeiners.mapping.api.ScriptNameResolutionException;
 import de.dmeiners.mapping.api.ScriptNameResolver;
+import de.dmeiners.mapping.api.ScriptText;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -58,13 +60,13 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
      * @param context    The script context
      */
     @Override
-    public String resolve(String scriptName, Map<String, Object> context) {
+    public ScriptText resolve(ScriptName scriptName, Map<String, Object> context) {
 
-        URL resource = getResource(ensureSuffix(scriptName), context);
+        URL resource = getResource(ensureSuffix(scriptName.getName()), context);
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8))) {
 
-            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+            return ScriptText.of(bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
         } catch (IOException e) {
 
             throw new ScriptNameResolutionException(

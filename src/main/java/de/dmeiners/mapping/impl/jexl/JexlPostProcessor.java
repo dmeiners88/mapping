@@ -3,8 +3,10 @@ package de.dmeiners.mapping.impl.jexl;
 import de.dmeiners.mapping.api.PostProcessor;
 import de.dmeiners.mapping.api.ResultTypeException;
 import de.dmeiners.mapping.api.ScriptExecutionException;
+import de.dmeiners.mapping.api.ScriptName;
 import de.dmeiners.mapping.api.ScriptNameResolver;
 import de.dmeiners.mapping.api.ScriptParseException;
+import de.dmeiners.mapping.api.ScriptText;
 import de.dmeiners.mapping.impl.ClasspathScriptNameResolver;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
@@ -38,14 +40,14 @@ public class JexlPostProcessor implements PostProcessor {
     }
 
     @Override
-    public <T> T process(T target, String scriptName, Map<String, Object> context) {
+    public <T> T process(T target, ScriptName scriptName, Map<String, Object> context) {
 
-        String scriptText = this.scriptNameResolver.resolve(scriptName);
-        return processInline(target, scriptText, context);
+        ScriptText scriptText = this.scriptNameResolver.resolve(scriptName);
+        return process(target, scriptText, context);
     }
 
     @Override
-    public <T> T processInline(T target, String scriptText, Map<String, Object> context) {
+    public <T> T process(T target, ScriptText scriptText, Map<String, Object> context) {
 
         JexlScript script = parse(scriptText);
         Object result = execute(target, context, script);
@@ -60,17 +62,17 @@ public class JexlPostProcessor implements PostProcessor {
     }
 
     @Override
-    public <T> List<T> process(Collection<T> targets, String scriptName, Map<String, Object> context) {
+    public <T> List<T> process(Collection<T> targets, ScriptName scriptName, Map<String, Object> context) {
 
-        String scriptText = this.scriptNameResolver.resolve(scriptName);
-        return processInline(targets, scriptText, context);
+        ScriptText scriptText = this.scriptNameResolver.resolve(scriptName);
+        return process(targets, scriptText, context);
     }
 
     @Override
-    public <T> List<T> processInline(Collection<T> targets, String scriptText, Map<String, Object> context) {
+    public <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context) {
 
         return targets.stream()
-            .map(it -> processInline(it, scriptText, context))
+            .map(it -> process(it, scriptText, context))
             .collect(Collectors.toList());
     }
 
@@ -87,21 +89,21 @@ public class JexlPostProcessor implements PostProcessor {
         return result;
     }
 
-    private JexlScript parse(String scriptText) {
+    private JexlScript parse(ScriptText scriptText) {
 
-        String preparedScriptText = ensureLastExpressionIsTarget(scriptText);
+        ScriptText preparedScriptText = ensureLastExpressionIsTarget(scriptText);
         JexlScript script;
 
         try {
 
-            script = engine.createScript(preparedScriptText, "target");
+            script = engine.createScript(preparedScriptText.getText(), "target");
         } catch (JexlException e) {
             throw new ScriptParseException(String.format("Error parsing script text: '%s'", preparedScriptText), e);
         }
         return script;
     }
 
-    private String ensureLastExpressionIsTarget(String scriptText) {
-        return String.format("%s; target;", scriptText);
+    private ScriptText ensureLastExpressionIsTarget(ScriptText scriptText) {
+        return ScriptText.of(String.format("%s; target;", scriptText.toString()));
     }
 }

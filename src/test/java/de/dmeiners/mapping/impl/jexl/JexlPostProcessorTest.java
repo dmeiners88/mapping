@@ -1,6 +1,7 @@
 package de.dmeiners.mapping.impl.jexl;
 
 import de.dmeiners.mapping.api.ResultTypeException;
+import de.dmeiners.mapping.api.ScriptText;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -12,11 +13,11 @@ public class JexlPostProcessorTest {
     @Test
     public void throwsExceptionIfScriptReturnsWrongType() {
 
-        String scriptText = "return target.length()";
+        ScriptText scriptText = ScriptText.of("return target.length()");
         String target = "Hello World!";
         JexlPostProcessor subject = new JexlPostProcessor();
 
-        assertThatThrownBy(() -> subject.processInline(target, scriptText, Collections.emptyMap()))
+        assertThatThrownBy(() -> subject.process(target, scriptText, Collections.emptyMap()))
             .isInstanceOf(ResultTypeException.class)
             .hasMessage("Script did not return an object of type 'java.lang.String'.");
     }

@@ -12,7 +12,7 @@ public interface ScriptNameResolver {
      * @return the resolved script text
      * @throws ScriptNameResolutionException if the script name could not be resolved into a script text
      */
-    default String resolve(String scriptName) {
+    default ScriptText resolve(ScriptName scriptName) {
 
         return resolve(scriptName, Collections.emptyMap());
     }
@@ -26,5 +26,5 @@ public interface ScriptNameResolver {
      * @return the resolved script text
      * @throws ScriptNameResolutionException if the script name could not be resolved into a script text
      */
-    String resolve(String scriptName, Map<String, Object> context);
+    ScriptText resolve(ScriptName scriptName, Map<String, Object> context);
 }
