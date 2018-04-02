@@ -1,9 +1,11 @@
 package de.dmeiners.mapping.impl.jexl
 
-import de.dmeiners.mapping.api.*
+import de.dmeiners.mapping.api.ScriptName
+import de.dmeiners.mapping.api.ScriptNameResolver
+import de.dmeiners.mapping.api.ScriptText
 import spock.lang.Specification
 
-class JexlPostProcessorSpec extends Specification {
+class JexlPostProcessorNoOpSpec extends Specification {
 
     def "processes no-op inline script on a single target"() {
 
@@ -57,57 +59,5 @@ class JexlPostProcessorSpec extends Specification {
 
         then: "the script does nothing"
         result == [target, target]
-    }
-
-    def "throws an exception if a script text cannot be parsed"() {
-
-        given:
-        def scriptText = ScriptText.of("target.length(")
-        def target = "Hello World!"
-        def subject = new JexlPostProcessor()
-
-        when:
-        subject.process(target, scriptText, [:])
-
-        then:
-        def e = thrown(ScriptParseException)
-        e.message == "Error parsing script text: 'target.length(; target;'"
-    }
-
-    def "throws an exception if a script execution fails"() {
-
-        given:
-        def scriptText = ScriptText.of("target.bogus(1)")
-        def target = "Hello World!"
-        def subject = new JexlPostProcessor()
-
-        when:
-        subject.process(target, scriptText, [:])
-
-        then:
-        def e = thrown(ScriptExecutionException)
-        e.message == "Error executing parsed script: 'target.bogus(1);\ntarget;\n'"
-    }
-
-    def "processes a simple inline script on a single target"() {
-
-        given:
-        def scriptText = ScriptText.of("target += ' World!'")
-        def target = "Hello"
-        def subject = new JexlPostProcessor()
-
-        expect:
-        subject.process(target, scriptText, [:]) == "Hello World!"
-    }
-
-    def "processes a simple inline script on multiple targets"() {
-
-        given:
-        def scriptText = ScriptText.of("target += ' World!'")
-        def targets = ["Hello", "Goodbye"]
-        def subject = new JexlPostProcessor()
-
-        expect:
-        subject.process(targets, scriptText, [:]) == ["Hello World!", "Goodbye World!"]
     }
 }
