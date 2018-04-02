@@ -35,7 +35,6 @@ public class JexlPostProcessor implements PostProcessor {
 
     JexlPostProcessor(ScriptNameResolver scriptNameResolver) {
 
-
         this.engine = new JexlBuilder()
             .cache(512)
             .strict(true)
