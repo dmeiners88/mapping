@@ -65,8 +65,8 @@ public class JexlPostProcessor implements PostProcessor {
         JexlScript script = scriptText.parse(this.engine);
 
         return targets.stream()
-            .map(it -> execute(it, context, script))
-            .map(it -> cast(targets.iterator().next(), it))
+            .map(target -> execute(target, context, script))
+            .map(result -> cast(targets.iterator().next(), result))
             .collect(Collectors.toList());
     }
 
