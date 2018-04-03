@@ -262,7 +262,9 @@
                         </goals>
                         <configuration>
                             <failOnWarning>true</failOnWarning>
-                            <usedDependencies>org.slf4j:slf4j-simple</usedDependencies>
+                            <usedDependencies>
+                                <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+                            </usedDependencies>
                         </configuration>
                     </execution>
                 </executions>
