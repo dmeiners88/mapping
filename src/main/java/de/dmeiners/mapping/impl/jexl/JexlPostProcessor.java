@@ -41,6 +41,7 @@ public class JexlPostProcessor implements PostProcessor {
             .silent(false)
             .sandbox(JexlSandboxFactory.create())
             .loader(new SandboxClassLoader())
+            .uberspect(new HelperUberspect())
             .create();
 
         this.scriptNameResolver = scriptNameResolver;
