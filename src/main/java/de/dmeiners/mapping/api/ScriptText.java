@@ -1,9 +1,6 @@
 package de.dmeiners.mapping.api;
 
 import com.google.errorprone.annotations.Immutable;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlException;
-import org.apache.commons.jexl3.JexlScript;
 
 import java.util.Objects;
 
@@ -24,21 +21,6 @@ public class ScriptText {
         return text;
     }
 
-    public JexlScript parse(JexlEngine engine) {
-
-        String preparedScriptText = ensureLastExpressionIsTarget(this.text);
-
-        JexlScript script;
-
-        try {
-
-            script = engine.createScript(preparedScriptText, "target");
-        } catch (JexlException e) {
-            throw new ScriptParseException(String.format("Error parsing script text: '%s'", preparedScriptText), e);
-        }
-        return script;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,9 +38,5 @@ public class ScriptText {
     @Override
     public String toString() {
         return this.text;
-    }
-
-    private String ensureLastExpressionIsTarget(String scriptText) {
-        return String.format("%s; target;", scriptText);
     }
 }

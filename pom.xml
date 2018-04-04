@@ -15,6 +15,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.mvel</groupId>
+                <artifactId>mvel2</artifactId>
+                <version>2.4.0.Final</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-jexl3</artifactId>
                 <version>3.1</version>
@@ -81,6 +86,10 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -208,6 +217,10 @@
                             <relocation>
                                 <pattern>org.apache.commons.jexl3</pattern>
                                 <shadedPattern>${shadedPrefix}.org.apache.commons.jexl3</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>org.mvel2</pattern>
+                                <shadedPattern>${shadedPrefix}.org.mvel2</shadedPattern>
                             </relocation>
                             <relocation>
                                 <pattern>org.apache.commons.logging</pattern>

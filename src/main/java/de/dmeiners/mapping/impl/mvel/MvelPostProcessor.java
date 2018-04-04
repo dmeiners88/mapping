@@ -1,4 +1,4 @@
-package de.dmeiners.mapping.impl.jexl;
+package de.dmeiners.mapping.impl.mvel;
 
 import de.dmeiners.mapping.api.BasePostProcessor;
 import de.dmeiners.mapping.api.ExecutionException;
@@ -6,69 +6,64 @@ import de.dmeiners.mapping.api.ParseException;
 import de.dmeiners.mapping.api.ResultTypeException;
 import de.dmeiners.mapping.api.ScriptNameResolver;
 import de.dmeiners.mapping.api.ScriptText;
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlException;
-import org.apache.commons.jexl3.JexlScript;
-import org.apache.commons.jexl3.MapContext;
+import org.mvel2.CompileException;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JexlPostProcessor extends BasePostProcessor {
+public class MvelPostProcessor extends BasePostProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(JexlPostProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(MvelPostProcessor.class);
 
-    private final JexlEngine engine;
+    private final ParserContext parserContext;
 
-    public JexlPostProcessor(ScriptNameResolver scriptNameResolver) {
-
+    public MvelPostProcessor(ScriptNameResolver scriptNameResolver) {
         super(scriptNameResolver);
 
-        this.engine = new JexlBuilder()
-            .cache(512)
-            .strict(true)
-            .silent(false)
-            .sandbox(JexlSandboxFactory.create())
-            .loader(new SandboxClassLoader())
-            .uberspect(new HelperUberspect())
-            .create();
+        this.parserContext = new ParserContext();
+        this.parserContext.setInterceptors(Collections.singletonMap("classInterceptor", new ClassInterceptor()));
 
-        logger.debug("Initialized.");
+        logger.debug("Initialized");
     }
 
     @Override
     public <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context) {
 
-        JexlScript script = this.parse(scriptText);
+        Object script = parse(scriptText);
+        MapVariableResolverFactory factory = new MapVariableResolverFactory(context);
 
         return targets.stream()
-            .map(target -> executeScript(target, context, script))
+            .map(target -> executeScript(target, factory, script))
             .map(result -> castResult(targets.iterator().next(), result))
             .collect(Collectors.toList());
     }
 
     @Override
     public String getEngineType() {
-        return "jexl";
+        return "mvel";
     }
 
-    private JexlScript parse(ScriptText scriptText) {
+    private Serializable parse(ScriptText scriptText) {
 
         ScriptText preparedScriptText = this.ensureLastExpressionIsTarget(scriptText);
 
-        JexlScript script;
-
+        Serializable script;
         try {
-
-            script = engine.createScript(preparedScriptText.getText(), "target");
-        } catch (JexlException e) {
+            script = MVEL.compileExpression(preparedScriptText.getText(), this.parserContext);
+        } catch (CompileException e) {
             throw new ParseException(String.format("Error parsing script text: '%s'", preparedScriptText), e);
         }
+
+
         return script;
     }
 
@@ -76,15 +71,16 @@ public class JexlPostProcessor extends BasePostProcessor {
         return ScriptText.of(String.format("%s; target;", scriptText.getText()));
     }
 
-    private <T> Object executeScript(T target, Map<String, Object> context, JexlScript script) {
+    private <T> Object executeScript(T target, MapVariableResolverFactory factory, Object script) {
 
         Object result;
 
         try {
-            result = script.execute(new MapContext(context), target);
-        } catch (JexlException e) {
+            factory.createVariable("target", target);
+            result = MVEL.executeExpression(script, factory);
+        } catch (CompileException e) {
             throw new ExecutionException(String.format("Error executing parsed script: '%s'",
-                script.getParsedText()), e);
+                script.toString()), e);
         }
         return result;
     }
@@ -99,5 +95,4 @@ public class JexlPostProcessor extends BasePostProcessor {
         // The above check should let this "cast" never fail. At runtime we are dealing with objects anyway.
         return (T) result;
     }
-
 }

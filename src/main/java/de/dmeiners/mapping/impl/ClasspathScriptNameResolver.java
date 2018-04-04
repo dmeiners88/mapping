@@ -1,7 +1,7 @@
 package de.dmeiners.mapping.impl;
 
 import de.dmeiners.mapping.api.ScriptName;
-import de.dmeiners.mapping.api.ScriptNameResolutionException;
+import de.dmeiners.mapping.api.NameResolutionException;
 import de.dmeiners.mapping.api.ScriptNameResolver;
 import de.dmeiners.mapping.api.ScriptText;
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
             return ScriptText.of(bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
         } catch (IOException e) {
 
-            throw new ScriptNameResolutionException(
+            throw new NameResolutionException(
                 String.format("Error while reading script '%s' from classpath.", resource.getPath()), e);
         }
     }
@@ -93,7 +93,7 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
             .filter(Objects::nonNull)
             .peek(resource -> logger.debug("Successfully resolved '{}'.", resource.getPath()))
             .findFirst()
-            .orElseThrow(() -> new ScriptNameResolutionException(
+            .orElseThrow(() -> new NameResolutionException(
                 String.format("Could not find any of the following classpath resources: %s.", searchPath)));
     }
 

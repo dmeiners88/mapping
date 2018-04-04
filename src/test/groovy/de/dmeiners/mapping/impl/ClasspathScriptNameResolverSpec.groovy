@@ -1,7 +1,7 @@
 package de.dmeiners.mapping.impl
 
 import de.dmeiners.mapping.api.ScriptName
-import de.dmeiners.mapping.api.ScriptNameResolutionException
+import de.dmeiners.mapping.api.NameResolutionException
 import de.dmeiners.mapping.api.ScriptText
 import spock.lang.Specification
 
@@ -16,7 +16,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         subject.resolve(ScriptName.of("nonExisting.jexl"))
 
         then:
-        def e = thrown(ScriptNameResolutionException)
+        def e = thrown(NameResolutionException)
         e.message == "Could not find any of the following classpath resources: [/jexl/nonExisting.jexl]."
     }
 
@@ -30,7 +30,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         subject.resolve(ScriptName.of("nonExisting.jexl"), [tenantId: tenantId])
 
         then:
-        def e = thrown(ScriptNameResolutionException)
+        def e = thrown(NameResolutionException)
         e.message == "Could not find any of the following classpath resources: [/jexl/5dc6dfaa-b2e2-492a-8c04-380e9c4c3371/nonExisting.jexl, /jexl/nonExisting.jexl]."
     }
 
