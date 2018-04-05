@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,17 +40,12 @@ public class MvelPostProcessor extends BasePostProcessor {
     public <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context) {
 
         Object script = parse(scriptText);
-        MapVariableResolverFactory factory = new MapVariableResolverFactory(context);
+        MapVariableResolverFactory factory = new MapVariableResolverFactory(new HashMap<>(context));
 
         return targets.stream()
             .map(target -> executeScript(target, factory, script))
             .map(result -> castResult(targets.iterator().next(), result))
             .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getEngineType() {
-        return "mvel";
     }
 
     private Serializable parse(ScriptText scriptText) {

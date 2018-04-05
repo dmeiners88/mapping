@@ -52,11 +52,6 @@ public class JexlPostProcessor extends BasePostProcessor {
             .collect(Collectors.toList());
     }
 
-    @Override
-    public String getEngineType() {
-        return "jexl";
-    }
-
     private JexlScript parse(ScriptText scriptText) {
 
         ScriptText preparedScriptText = this.ensureLastExpressionIsTarget(scriptText);
