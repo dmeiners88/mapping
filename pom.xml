@@ -12,5 +12,6 @@
         <module>mapping-api</module>
         <module>mapping-impl-jexl</module>
         <module>mapping-impl-mvel</module>
+        <module>mapping-sample-consumer</module>
     </modules>
 </project>
