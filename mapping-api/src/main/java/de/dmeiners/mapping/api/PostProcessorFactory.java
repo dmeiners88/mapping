@@ -1,26 +1,29 @@
 package de.dmeiners.mapping.api;
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class PostProcessorFactory {
 
-    private static final ServiceLoader<PostProcessor> loader = ServiceLoader.load(PostProcessor.class);
+    private static final ServiceLoader<PostProcessorProvider> loader = ServiceLoader.load(PostProcessorProvider.class);
 
     private PostProcessorFactory() {
     }
 
-    public static PostProcessor create(String engineType) {
+    public static PostProcessor create() {
 
-        return create(engineType, new ClasspathScriptNameResolver());
+        return create(new ClasspathScriptNameResolver());
     }
 
-    public static PostProcessor create(String engineType, ScriptNameResolver resolver) {
+    public static PostProcessor create(ScriptNameResolver resolver) {
 
-        for (PostProcessor processor : loader) {
+        Iterator<PostProcessorProvider> providers = loader.iterator();
 
-            if (processor.getEngineType().equals(engineType)) {
-                return processor;
-            }
+        if (providers.hasNext()) {
+
+            PostProcessorProvider provider = providers.next();
+
+            return provider.create(resolver);
         }
 
         return null;

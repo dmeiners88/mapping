@@ -33,6 +33,4 @@ public interface PostProcessor {
      * @throws ResultTypeException      if the script returns another type than the target object has
      */
     <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context);
-
-    String getEngineType();
 }
