@@ -13,11 +13,13 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+            <!-- tag::apiDependency[] -->
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-api</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
+            <!-- end::apiDependency[] -->
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-impl-mvel</artifactId>

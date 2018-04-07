@@ -16,11 +16,13 @@ public class Application {
 
         logger.debug("Startup");
 
+        // tag::usage[]
         PostProcessor processor = PostProcessorFactory.create();
 
         String target = "Hello";
 
         String result = processor.process(target, ScriptText.of("target += ' World!'"), Collections.emptyMap());
+        // end::usage[]
 
         logger.debug(result);
     }
