@@ -2,7 +2,7 @@ package de.dmeiners.mapping.sample;
 
 import de.dmeiners.mapping.api.PostProcessor;
 import de.dmeiners.mapping.api.PostProcessorFactory;
-import de.dmeiners.mapping.api.ScriptText;
+import de.dmeiners.mapping.api.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +27,11 @@ public class Application {
         // tag::simpleUsage[]
         PostProcessor processor = PostProcessorFactory.create();
 
-        String target = "Hello";
+        String someObject = "Hello";
 
-        String result = processor.process(target, ScriptText.of("target += ' World!'"), Collections.emptyMap());
+        Script script = processor.compileInline("target += ' World!'");
+
+        String result = script.execute(someObject, Collections.emptyMap());
         // end::simpleUsage[]
 
         logger.debug(result);
@@ -47,11 +49,13 @@ public class Application {
         Map<String, Object> context = new HashMap<>();
         context.put("user", user);
 
-        String target = "Hello";
+        String someObject = "Hello";
 
-        ScriptText script = ScriptText.of("target += ` ${user.firstName} ${user.lastName}`");
+        String scriptText = "target += ` ${user.firstName} ${user.lastName}`";
 
-        String result = processor.process(target, script, context);
+        Script script = processor.compileInline(scriptText);
+
+        String result = script.execute(someObject, context);
         // end::contextUsage[]
 
         logger.debug(result);

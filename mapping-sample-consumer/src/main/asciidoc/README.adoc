@@ -1,3 +1,6 @@
+:root: ../../..
+:src: {root}/src/main/java/de/dmeiners/mapping/sample
+
 = A Zero-Dependency Mapping Library
 
 == Installation
@@ -5,41 +8,41 @@
 Declare the API dependency:
 [source,xml,indent=0]
 ----
-include::pom.xml[tags=apiDependency]
+include::{root}/pom.xml[tags=apiDependency]
 ----
 
 Declare a dependency to at least one implementation, e.g.
 [source,xml,indent=0]
 ----
-include::pom.xml[tags=jexlDependency]
+include::{root}/pom.xml[tags=jexlDependency]
 ----
 or
 [source,xml,indent=0]
 ----
-include::pom.xml[tags=mvelDependency]
+include::{root}/pom.xml[tags=mvelDependency]
 ----
 
 Declare a dependency to slf4j:
 [source,xml,indent=0]
 ----
-include::pom.xml[tags=slf4jDependency]
+include::{root}/pom.xml[tags=slf4jDependency]
 ----
 Also, do not forget to declare a dependency to an slf4j implementation, e.g.
 [source,xml,indent=0]
 ----
-include::pom.xml[tags=slf4jImplDependency]
+include::{root}/pom.xml[tags=slf4jImplDependency]
 ----
 
 == Usage
 
-Simple Usage
+Simple usage
 [source,java,indent=0]
 ----
-include::src/main/java/de/dmeiners/mapping/sample/Application.java[tags=simpleUsage]
+include::{src}/Application.java[tags=simpleUsage]
 ----
 
 Usage with a passed context
 [source,java,indent=0]
 ----
-include::src/main/java/de/dmeiners/mapping/sample/Application.java[tags=contextUsage]
+include::{src}/Application.java[tags=contextUsage]
 ----

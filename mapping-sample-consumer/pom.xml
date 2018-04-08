@@ -174,9 +174,32 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <baseDir>${project.basedir}</baseDir>
                             <backend>html5</backend>
                             <sourceHighlighter>coderay</sourceHighlighter>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-readme-html-to-basedir</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-docs</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>README.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
