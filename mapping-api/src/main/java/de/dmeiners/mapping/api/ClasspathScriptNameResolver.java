@@ -3,7 +3,6 @@ package de.dmeiners.mapping.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,7 +25,7 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
      * Constructs an instance with default values:
      * <ul>
      * <li>prefix: <code>/jexl</code></li>
-     * <li>tenant key in script context: <code>tenantId</code></li>
+     * <li>tenant key in context: <code>tenantId</code></li>
      * </ul>
      * Let's assume the script context map contains a mapping <code>tenantId -> 1234</code>.
      * This instance will thus search for a given script name of <code>myScript.jexl</code> in the following paths, in order:
@@ -40,7 +39,7 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
     }
 
     /**
-     * Constructs an instance with the given values for the classpath prefix and tenant key in script context.
+     * Constructs an instance with the given values for the classpath prefix and tenant key in context.
      * <p>
      * Let's assume a classpath prefix of <code>/scripts</code> was given and the script context map contains a
      * mapping <code>tenantId -> 1234</code>.
@@ -62,16 +61,16 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
      * @param context    The script context
      */
     @Override
-    public ScriptText resolve(ScriptName scriptName, Map<String, Object> context) {
+    public String resolve(String scriptName, Map<String, Object> context) {
 
-        URL resource = getResource(ensureSuffix(scriptName.getName()), context);
+        URL resource = getResource(ensureSuffix(scriptName), context);
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8))) {
 
-            return ScriptText.of(bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
+            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (IOException e) {
 
-            throw new NameResolutionException(
+            throw new ScriptNameResolutionException(
                 String.format("Error while reading script '%s' from classpath.", resource.getPath()), e);
         }
     }
@@ -89,7 +88,7 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
             .filter(Objects::nonNull)
             .peek(resource -> logger.debug("Successfully resolved '{}'.", resource.getPath()))
             .findFirst()
-            .orElseThrow(() -> new NameResolutionException(
+            .orElseThrow(() -> new ScriptNameResolutionException(
                 String.format("Could not find any of the following classpath resources: %s.", searchPath)));
     }
 
@@ -103,7 +102,6 @@ public class ClasspathScriptNameResolver implements ScriptNameResolver {
         return this.prefix + "/" + scriptName;
     }
 
-    @Nullable
     private String withTenantPrefix(String scriptName, Map<String, Object> context) {
 
         if (context.containsKey(this.tenantKeyInScriptContext)) {

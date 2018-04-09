@@ -10,10 +10,10 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         when:
-        subject.resolve(ScriptName.of("nonExisting.jexl"))
+        subject.resolve("nonExisting.jexl")
 
         then:
-        def e = thrown(NameResolutionException)
+        def e = thrown(ScriptNameResolutionException)
         e.message == "Could not find any of the following classpath resources: [/jexl/nonExisting.jexl]."
     }
 
@@ -24,10 +24,10 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         when:
-        subject.resolve(ScriptName.of("nonExisting.jexl"), [tenantId: tenantId])
+        subject.resolve("nonExisting.jexl", [tenantId: tenantId])
 
         then:
-        def e = thrown(NameResolutionException)
+        def e = thrown(ScriptNameResolutionException)
         e.message == "Could not find any of the following classpath resources: [/jexl/5dc6dfaa-b2e2-492a-8c04-380e9c4c3371/nonExisting.jexl, /jexl/nonExisting.jexl]."
     }
 
@@ -37,7 +37,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve(ScriptName.of("myScript.jexl"), [:]) == ScriptText.of("// I am here")
+        subject.resolve("myScript.jexl", [:]) == "// I am here"
     }
 
     def "resolves an existing script name when a tenant prefix is available"() {
@@ -47,7 +47,7 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve(ScriptName.of("myScript.jexl"), [tenantId: tenantId]) == ScriptText.of("// Tenant override")
+        subject.resolve("myScript.jexl", [tenantId: tenantId]) == "// Tenant override"
     }
 
     def "falls back to default script name when a tenant prefix is invalid"() {
@@ -57,6 +57,6 @@ class ClasspathScriptNameResolverSpec extends Specification {
         def subject = new ClasspathScriptNameResolver()
 
         expect:
-        subject.resolve(ScriptName.of("myScript.jexl"), [tenantId: tenantId]) == ScriptText.of("// I am here")
+        subject.resolve("myScript.jexl", [tenantId: tenantId]) == "// I am here"
     }
 }

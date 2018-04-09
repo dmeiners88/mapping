@@ -1,36 +1,22 @@
 package de.dmeiners.mapping.api;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public interface PostProcessor {
 
     /**
-     * @throws ParseException     if the script can not be parsed
-     * @throws ExecutionException if an error occurs during script execution
-     * @throws ResultTypeException      if the script returns another type than the target object has
+     * Resolves a given script name to a script text and compiles it.
+     * The script name will be resolved with this instance's {@link ScriptNameResolver}.
+     * Use {@link PostProcessorFactory#create(ScriptNameResolver)} to specify a resolver at creation time.
+     *
+     * @throws ParseException if the script text can not be parsed
      */
-    <T> T process(T target, ScriptName scriptName, Map<String, Object> context);
+    Script compile(String scriptName, Map<String, Object> context);
 
     /**
-     * @throws ParseException     if the script can not be parsed
-     * @throws ExecutionException if an error occurs during script execution
-     * @throws ResultTypeException      if the script returns another type than the target object has
+     * Compiles a given script text with this post processor instance.
+     *
+     * @throws ParseException if the script text can not be parsed
      */
-    <T> T process(T target, ScriptText scriptText, Map<String, Object> context);
-
-    /**
-     * @throws ParseException     if the script can not be parsed
-     * @throws ExecutionException if an error occurs during script execution
-     * @throws ResultTypeException      if the script returns another type than the target object has
-     */
-    <T> List<T> process(Collection<T> targets, ScriptName scriptName, Map<String, Object> context);
-
-    /**
-     * @throws ParseException     if the script can not be parsed
-     * @throws ExecutionException if an error occurs during script execution
-     * @throws ResultTypeException      if the script returns another type than the target object has
-     */
-    <T> List<T> process(Collection<T> targets, ScriptText scriptText, Map<String, Object> context);
+    Script compileInline(String scriptText);
 }

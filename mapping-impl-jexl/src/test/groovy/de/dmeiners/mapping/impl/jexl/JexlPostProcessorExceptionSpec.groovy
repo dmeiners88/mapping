@@ -2,7 +2,6 @@ package de.dmeiners.mapping.impl.jexl
 
 import de.dmeiners.mapping.api.ExecutionException
 import de.dmeiners.mapping.api.ParseException
-import de.dmeiners.mapping.api.ScriptText
 import spock.lang.Specification
 
 class JexlPostProcessorExceptionSpec extends Specification {
@@ -10,12 +9,11 @@ class JexlPostProcessorExceptionSpec extends Specification {
     def "throws an exception if a script text cannot be parsed"() {
 
         given:
-        def scriptText = ScriptText.of("target.length(")
-        def target = "Hello World!"
+        def scriptText = "target.length("
         def subject = new JexlPostProcessor()
 
         when:
-        subject.process(target, scriptText, [:])
+        subject.compileInline(scriptText)
 
         then:
         def e = thrown(ParseException)
@@ -25,12 +23,13 @@ class JexlPostProcessorExceptionSpec extends Specification {
     def "throws an exception if a script execution fails"() {
 
         given:
-        def scriptText = ScriptText.of("target.bogus(1)")
+        def scriptText = "target.bogus(1)"
         def target = "Hello World!"
         def subject = new JexlPostProcessor()
 
         when:
-        subject.process(target, scriptText, [:])
+        def script = subject.compileInline(scriptText)
+        script.execute(target, [:])
 
         then:
         def e = thrown(ExecutionException)

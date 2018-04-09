@@ -1,8 +1,5 @@
 package de.dmeiners.mapping.api;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public abstract class BasePostProcessor implements PostProcessor {
@@ -14,22 +11,15 @@ public abstract class BasePostProcessor implements PostProcessor {
     }
 
     @Override
-    public <T> T process(T target, ScriptText scriptText, Map<String, Object> context) {
+    public Script compile(String scriptName, Map<String, Object> context) {
 
-        return process(Collections.singletonList(target), scriptText, context).iterator().next();
-    }
+        String scriptText = null;
+        try {
+            scriptText = this.scriptNameResolver.resolve(scriptName, context);
+        } catch (ScriptNameResolutionException e) {
+            throw new ParseException("Unable to parse because script name resolution failed.", e);
+        }
 
-    @Override
-    public <T> T process(T target, ScriptName scriptName, Map<String, Object> context) {
-
-        ScriptText scriptText = scriptName.resolve(this.scriptNameResolver, context);
-        return process(target, scriptText, context);
-    }
-
-    @Override
-    public <T> List<T> process(Collection<T> targets, ScriptName scriptName, Map<String, Object> context) {
-
-        ScriptText scriptText = scriptName.resolve(this.scriptNameResolver, context);
-        return process(targets, scriptText, context);
+        return this.compileInline(scriptText);
     }
 }

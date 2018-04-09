@@ -2,7 +2,6 @@ package de.dmeiners.mapping.impl.mvel
 
 import de.dmeiners.mapping.api.ExecutionException
 import de.dmeiners.mapping.api.ParseException
-import de.dmeiners.mapping.api.ScriptText
 import spock.lang.Specification
 
 class MvelPostProcessorExceptionSpec extends Specification {
@@ -10,12 +9,13 @@ class MvelPostProcessorExceptionSpec extends Specification {
     def "throws an exception if a script text cannot be parsed"() {
 
         given:
-        def scriptText = ScriptText.of("target.length(")
+        def scriptText = "target.length("
         def target = "Hello World!"
         def subject = new MvelPostProcessor()
 
         when:
-        subject.process(target, scriptText, [:])
+        def script = subject.compileInline(scriptText)
+        script.execute(target, [:])
 
         then:
         def e = thrown(ParseException)
@@ -25,12 +25,13 @@ class MvelPostProcessorExceptionSpec extends Specification {
     def "throws an exception if a script execution fails"() {
 
         given:
-        def scriptText = ScriptText.of("target.bogus(1)")
+        def scriptText = "target.bogus(1)"
         def target = "Hello World!"
         def subject = new MvelPostProcessor()
 
         when:
-        subject.process(target, scriptText, [:])
+        def script = subject.compileInline(scriptText)
+        script.execute(target, [:])
 
         then:
         def e = thrown(ExecutionException)
