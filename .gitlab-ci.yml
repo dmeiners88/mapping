@@ -1,0 +1,9 @@
+pages:
+  stage: deploy
+  script:
+  - mv README.html public/index.html
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
