@@ -189,10 +189,6 @@
                                 <pattern>org.mvel2</pattern>
                                 <shadedPattern>${shadedPrefix}.org.mvel2</shadedPattern>
                             </relocation>
-                            <relocation>
-                                <pattern>org.apache.commons.logging</pattern>
-                                <shadedPattern>${shadedPrefix}.org.apache.commons.logging</shadedPattern>
-                            </relocation>
                         </relocations>
                     </configuration>
                 </plugin>
