@@ -7,6 +7,7 @@ import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.MapContext;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,16 +15,21 @@ import java.util.stream.Collectors;
 public class JexlScript extends BaseScript {
 
     private final org.apache.commons.jexl3.JexlScript script;
+    private final Map<String, Object> extensions;
 
-    JexlScript(org.apache.commons.jexl3.JexlScript script) {
+    JexlScript(org.apache.commons.jexl3.JexlScript script, Map<String, Object> extensions) {
         this.script = script;
+        this.extensions = extensions;
     }
 
     @Override
     public <T> List<T> execute(Collection<T> targets, Map<String, Object> context) {
 
+        Map<String, Object> extendedContext = new HashMap<>(context);
+        extendedContext.putAll(this.extensions);
+
         return targets.stream()
-            .map(target -> executeScript(target, context))
+            .map(target -> executeScript(target, extendedContext))
             .map(result -> castResult(targets.iterator().next(), result))
             .collect(Collectors.toList());
     }

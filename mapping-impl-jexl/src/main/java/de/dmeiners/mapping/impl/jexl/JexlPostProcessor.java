@@ -1,9 +1,6 @@
 package de.dmeiners.mapping.impl.jexl;
 
-import de.dmeiners.mapping.api.BasePostProcessor;
-import de.dmeiners.mapping.api.ParseException;
-import de.dmeiners.mapping.api.Script;
-import de.dmeiners.mapping.api.ScriptNameResolver;
+import de.dmeiners.mapping.api.*;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
@@ -11,15 +8,22 @@ import org.apache.commons.jexl3.JexlScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 public class JexlPostProcessor extends BasePostProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(JexlPostProcessor.class);
 
+    private final ConcurrentMap<String, JexlScript> scriptCache = new ConcurrentHashMap<>();
+
     private final JexlEngine engine;
 
-    public JexlPostProcessor(ScriptNameResolver scriptNameResolver) {
+    JexlPostProcessor(ScriptNameResolver scriptNameResolver, Map<String, Object> extensions) {
 
-        super(scriptNameResolver);
+        super(scriptNameResolver, extensions);
 
         this.engine = new JexlBuilder()
             .cache(512)
@@ -33,13 +37,21 @@ public class JexlPostProcessor extends BasePostProcessor {
         logger.debug("Initialized.");
     }
 
+    JexlPostProcessor(ScriptNameResolver scriptNameResolver) {
+
+        this(scriptNameResolver, Collections.emptyMap());
+    }
+
+    JexlPostProcessor() {
+        this(new ClasspathScriptNameResolver());
+    }
 
     @Override
     public Script compileInline(String scriptText) {
 
-        JexlScript script = this.parse(scriptText);
+        JexlScript script = this.scriptCache.computeIfAbsent(scriptText, this::parse);
 
-        return new de.dmeiners.mapping.impl.jexl.JexlScript(script);
+        return new de.dmeiners.mapping.impl.jexl.JexlScript(script, this.extensions);
     }
 
     private JexlScript parse(String scriptText) {
