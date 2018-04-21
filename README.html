@@ -594,7 +594,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">PostProcessor processor = PostProcessorFactory.create();
+<pre class="CodeRay highlight"><code data-lang="java">PostProcessor processor = PostProcessorFactory.builder().build();
 
 <span class="predefined-type">String</span> someObject = <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span>;
 
@@ -608,7 +608,7 @@ Script script = processor.compileInline(<span class="string"><span class="delimi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">PostProcessor processor = PostProcessorFactory.create();
+<pre class="CodeRay highlight"><code data-lang="java">PostProcessor processor = PostProcessorFactory.builder().build();
 
 <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; user = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
 user.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>);
@@ -626,12 +626,38 @@ Script script = processor.compileInline(scriptText);
 <span class="predefined-type">String</span> result = script.execute(someObject, context);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Expose a library function into the script</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">PostProcessor processor = PostProcessorFactory.builder()
+    .extension(<span class="string"><span class="delimiter">&quot;</span><span class="content">StringUtils</span><span class="delimiter">&quot;</span></span>, StringUtils.class)
+    .extension(<span class="string"><span class="delimiter">&quot;</span><span class="content">Tools</span><span class="delimiter">&quot;</span></span>, Tools.class)
+    .build();
+
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; user = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+user.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>);
+user.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">lastName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Doe</span><span class="delimiter">&quot;</span></span>);
+
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+context.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>, user);
+
+<span class="predefined-type">String</span> someObject = <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span>;
+
+<span class="predefined-type">String</span> scriptText = <span class="string"><span class="delimiter">&quot;</span><span class="content">if (StringUtils.isNotBlank(user.firstName)) { target = 'First name is not blank and reversed ' + Tools.reverse(user.firstName); }</span><span class="delimiter">&quot;</span></span>;
+
+Script script = processor.compileInline(scriptText);
+
+<span class="predefined-type">String</span> result = script.execute(someObject, context);</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-07 17:53:10 MESZ
+Last updated 2018-04-21 16:48:40 MESZ
 </div>
 </div>
 </body>

@@ -46,3 +46,9 @@ Usage with a passed context
 ----
 include::{src}/Application.java[tags=contextUsage]
 ----
+
+Expose a library function into the script
+[source,java,indent=0]
+----
+include::{src}/Application.java[tags=exposeLibrary]
+----
