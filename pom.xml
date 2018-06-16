@@ -12,7 +12,6 @@
         <module>mapping-api</module>
         <module>mapping-impl-jexl</module>
         <module>mapping-impl-mvel</module>
-        <module>mapping-impl-groovy</module>
         <module>mapping-impl-java</module>
         <module>mapping-sample-consumer</module>
     </modules>
