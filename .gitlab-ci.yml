@@ -16,8 +16,8 @@ build:
 test:
   stage: test
   image: maven:latest
-    script:
-      - mvn $MAVEN_CLI_OPTS test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
 
 pages:
   stage: deploy
