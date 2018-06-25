@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dmeiners.mapping</groupId>
     <artifactId>mapping-impl-jexl</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Mapping Library - JEXL Implementation</name>
     <description>A Zero-Dependency Mapping Library - Apache Commons JEXL Implementation</description>
     <properties>
@@ -13,6 +13,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <shadedPrefix>de.dmeiners.mapping.impl.jexl.shaded</shadedPrefix>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>bintray-dmeiners-mapping</id>
+            <name>dmeiners-mapping</name>
+            <url>https://api.bintray.com/maven/dmeiners/mapping/mapping-impl-jexl/;publish=1</url>
+        </repository>
+    </distributionManagement>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -238,6 +245,11 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -328,6 +340,19 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
