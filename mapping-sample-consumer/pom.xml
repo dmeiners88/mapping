@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dmeiners.mapping</groupId>
     <artifactId>mapping-sample-consumer</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Mapping Library - Sample Consumer Application</name>
     <description>A Zero-Dependency Mapping Library - Sample Consumer Application</description>
     <properties>
@@ -24,7 +24,7 @@
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-api</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <!-- end::apiDependency[] -->
 
@@ -32,7 +32,7 @@
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-impl-jexl</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <!-- end::jexlDependency[] -->
 
@@ -40,7 +40,7 @@
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-impl-mvel</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <!-- end::mvelDependency[] -->
 

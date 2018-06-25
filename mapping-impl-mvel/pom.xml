@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.dmeiners.mapping</groupId>
     <artifactId>mapping-impl-mvel</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Mapping Library - MVEL Implementation</name>
     <description>A Zero-Dependency Mapping Library - MVEL Implementation</description>
     <properties>
@@ -17,7 +17,7 @@
             <dependency>
                 <groupId>de.dmeiners.mapping</groupId>
                 <artifactId>mapping-api</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
