@@ -41,7 +41,7 @@ public class JavaScript extends BaseScript {
     @Override
     public <T> List<T> execute(Collection<T> targets, Map<String, Object> context) {
 
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return Collections.emptyList();
         }
 
