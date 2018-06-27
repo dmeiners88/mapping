@@ -202,6 +202,14 @@
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>3.1.0</version>
                     <configuration>
+                        <filters>
+                            <filter>
+                                <artifact>org.apache.commons:commons-jexl3</artifact>
+                                <excludes>
+                                    <exclude>META-INF/services/javax.script.ScriptEngineFactory</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
                         <artifactSet>
                             <excludes>
                                 <exclude>de.dmeiners.mapping:mapping-api</exclude>
