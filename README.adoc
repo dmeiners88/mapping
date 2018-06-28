@@ -1,0 +1,10 @@
+= This project is archived!
+
+This project's Maven modules have been split up into separate repositories:
+
+* https://github.com/dmeiners88/mapping-api
+* https://github.com/dmeiners88/mapping-impl-jexl
+* https://github.com/dmeiners88/mapping-impl-mvel
+* https://github.com/dmeiners88/mapping-impl-java
+
+All future development will happen there!
